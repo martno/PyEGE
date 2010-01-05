@@ -1,0 +1,317 @@
+
+
+newWindow(int width, int height, bint fullscreen = False)
+	Creates a new window with given width and height. If fullscreen is set to True the game will start in fullscreen, otherwise the game is windowed. Don't open several windows at the same time.
+
+closeWindow()
+	Closes the current window.
+
+
+update():
+	Updates the application. Call this function each frame.
+
+
+setWindowSize(int width, int height):
+	Changed the size of the window
+
+
+setFPS(int newFPS):
+	Changed the number of frames per second that the game will run in.
+
+
+def setClearColor(color):
+	Sets the clear color to given color.
+
+
+showMouseCursor(bint show)
+	Shows or hides the mouse cursor depending on the input. (Doesn't work?)
+
+
+def getMouseState():
+	Returns a dictionary with the current mouse states with the following keys:
+'x'
+	x-position
+'y'
+	y-position
+'left'
+	if the left mouse button is pressed
+'right'
+	if the right mouse button is pressed
+'middle'
+	if the middle mouse button is pressed
+'wheel'
+	the wheel position
+
+
+def getKey(key):
+	Returns True if the specified key is being pressed, otherwise False. A key can either be a string containing a capsed letter or one of the following constants:
+KEY_UNKNOWN      =-1
+KEY_SPACE        =32
+KEY_SPECIAL      =256
+KEY_ESC          =(KEY_SPECIAL+1)
+KEY_F1           =(KEY_SPECIAL+2)
+KEY_F2           =(KEY_SPECIAL+3)
+KEY_F3           =(KEY_SPECIAL+4)
+KEY_F4           =(KEY_SPECIAL+5)
+KEY_F5           =(KEY_SPECIAL+6)
+KEY_F6           =(KEY_SPECIAL+7)
+KEY_F7           =(KEY_SPECIAL+8)
+KEY_F8           =(KEY_SPECIAL+9)
+KEY_F9           =(KEY_SPECIAL+10)
+KEY_F10          =(KEY_SPECIAL+11)
+KEY_F11          =(KEY_SPECIAL+12)
+KEY_F12          =(KEY_SPECIAL+13)
+KEY_F13          =(KEY_SPECIAL+14)
+KEY_F14          =(KEY_SPECIAL+15)
+KEY_F15          =(KEY_SPECIAL+16)
+KEY_F16          =(KEY_SPECIAL+17)
+KEY_F17          =(KEY_SPECIAL+18)
+KEY_F18          =(KEY_SPECIAL+19)
+KEY_F19          =(KEY_SPECIAL+20)
+KEY_F20          =(KEY_SPECIAL+21)
+KEY_F21          =(KEY_SPECIAL+22)
+KEY_F22          =(KEY_SPECIAL+23)
+KEY_F23          =(KEY_SPECIAL+24)
+KEY_F24          =(KEY_SPECIAL+25)
+KEY_F25          =(KEY_SPECIAL+26)
+KEY_UP           =(KEY_SPECIAL+27)
+KEY_DOWN         =(KEY_SPECIAL+28)
+KEY_LEFT         =(KEY_SPECIAL+29)
+KEY_RIGHT        =(KEY_SPECIAL+30)
+KEY_LSHIFT       =(KEY_SPECIAL+31)
+KEY_RSHIFT       =(KEY_SPECIAL+32)
+KEY_LCTRL        =(KEY_SPECIAL+33)
+KEY_RCTRL        =(KEY_SPECIAL+34)
+KEY_LALT         =(KEY_SPECIAL+35)
+KEY_RALT         =(KEY_SPECIAL+36)
+KEY_TAB          =(KEY_SPECIAL+37)
+KEY_ENTER        =(KEY_SPECIAL+38)
+KEY_BACKSPACE    =(KEY_SPECIAL+39)
+KEY_INSERT       =(KEY_SPECIAL+40)
+KEY_DEL          =(KEY_SPECIAL+41)
+KEY_PAGEUP       =(KEY_SPECIAL+42)
+KEY_PAGEDOWN     =(KEY_SPECIAL+43)
+KEY_HOME         =(KEY_SPECIAL+44)
+KEY_END          =(KEY_SPECIAL+45)
+KEY_KP_0         =(KEY_SPECIAL+46)
+KEY_KP_1         =(KEY_SPECIAL+47)
+KEY_KP_2         =(KEY_SPECIAL+48)
+KEY_KP_3         =(KEY_SPECIAL+49)
+KEY_KP_4         =(KEY_SPECIAL+50)
+KEY_KP_5         =(KEY_SPECIAL+51)
+KEY_KP_6         =(KEY_SPECIAL+52)
+KEY_KP_7         =(KEY_SPECIAL+53)
+KEY_KP_8         =(KEY_SPECIAL+54)
+KEY_KP_9         =(KEY_SPECIAL+55)
+KEY_KP_DIVIDE    =(KEY_SPECIAL+56)
+KEY_KP_MULTIPLY  =(KEY_SPECIAL+57)
+KEY_KP_SUBTRACT  =(KEY_SPECIAL+58)
+KEY_KP_ADD       =(KEY_SPECIAL+59)
+KEY_KP_DECIMAL   =(KEY_SPECIAL+60)
+KEY_KP_EQUAL     =(KEY_SPECIAL+61)
+KEY_KP_ENTER     =(KEY_SPECIAL+62)
+KEY_LAST         =KEY_KP_ENTER
+
+
+
+sendData(data, int priority=HIGH_PRIORITY, int reliability=RELIABLE_ORDERED, int channel=0, bint timeStamp=True, svUsers=None, bint svBroadcast=True)
+    Sends data with specified priority, reliability and channel. 
+data is serialized using cPickle so you can send almost everything through this function! see 
+http://docs.python.org/library/pickle.html#what-can-be-pickled-and-unpickled
+for more information on what can be pickled.
+Priority can be one of the following
+HIGH_PRIORITY
+MEDIUM_PRIORITY
+LOW_PRIORITY
+
+and reliability is one of
+UNRELIABLE
+UNRELIABLE_SEQUENCED
+RELIABLE
+RELIABLE_ORDERED
+RELIABLE_SEQUENCED
+
+channel is an integer in the range [0, 31]. If timeStamp is True the packet will be timestamped. Don't change svUsers and svBroadcast for now...
+
+
+
+
+receiveData()
+If there is a packet this function returns a dictionary with the following keys: 
+from
+	A string representing the sender, if this value is 'system' it is a message from the system and not a packet including data
+type:
+	The type of the packet. A packet sent from a user has the type 'userDefinedPacket'
+data
+	If type is 'userDefinedPacket' then this is the data sent by the user.
+delay
+	If the message was timestamped then this is approximately the delay from the time when the packet was sent until it was red by this function in ms, otherwise this value is None
+If there is no packet this function returns None
+        
+
+
+isServer()
+	Returns True if this instance is acting as a server, otherwise False
+
+
+
+
+
+
+
+drawPoints(coords, color, float size = 1.0, bint antiAliasing = False):
+	Draws several points at positions given by coords with specified color and size. color is either (R, G, B) or (R, G, B, A). ce is preloaded with the following colors: WHITE, RED, GREEN, BLUE, YELLOW, PINK, CYAN, BLACK.
+The points are anti aliased if antiAliasing is True.
+	coords should look like the following:
+	( (x1, y1), (x2, y2), (x3, y3), ... )
+
+drawLines(coords, color, float width = 1, bint loop = False, stipple = False, bint antiAliasing = False):
+	Draws a line between the coordinated given by coords with specified color and width . coords should look like the example in the description of drawPoints. If loop True a line from the last point to the first point is also drawn. To stipple the line set stipple to (stippleFactor, stipplePattern), otherwise set this to False. The points are anti aliased if antiAliasing is True.
+
+
+def drawTriangles(coords, color, int form = SEPARATE)
+	Draws triangles given by the coordinates coords, given color and form. coords should look like the example in the description of drawPoints. form is either SEPARATE, STRIP or FAN.
+
+
+def drawEllipse(coords, color, double a, double b, double rotate)
+	Draws an ellipse at position coords=(x, y) with specified color. a and b are major and minor semiaxes, depending on which is largest. rotate is the rotation radius.
+
+
+
+def drawPolygon(coords, color, int type = 0)
+	Draws a polygon with specified coorinates (given by coords) and color. coords should look like the example in the description of drawPoints. IMPORTANT: The polygon MUST be convex!
+
+
+
+
+
+
+
+
+
+
+class Image:
+	def __init__(filename)
+		Initialize the image with specified image in filename.
+
+	def __init__(self, width, height, color)
+		Initialize the image with specified width, height and color.
+
+
+
+	def draw(self, double x, double y, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
+		Draws the image on the screen at position (x, y). Bilinear can be set. scaleX and scaleY scales the image in the x repsectively y direction. The image is rotated rotation degrees around (rotatePtX, rotatePtY). If the color is of the form (R, G, B) or (R, G , B, A) the image will be tinted to this color. Set this to WHITE or False to get the real colors of the image.
+
+
+	def getWidth(self)
+		Returns the width of the image.
+
+	def getHeight(self)
+		Returns the height of the image.
+
+	def drawPoints(self, coords, color, float size = 1.0, bint antiAliasing = False)
+		Draws points in the image, see description for the function drawPoints for more info.
+
+
+	def drawLines(self, coords, color, float width = 1, bint loop = False, stipple = False, bint antiAliasing = False)
+		Draws lines in the image, see description for the function drawLines for more info.
+
+
+	def drawTriangles(self, coords, color, int form = SEPARATE)
+		Draws triangles in the image, see description for the function drawTriangles for more info.
+
+
+	def drawPolygon(self, coords, color)
+		Draws a polygon in the image, see description for the function drawPolygon for more info.
+
+
+	def subImage(self, Image src, int x, int y, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
+		Draws a already loaded image in the current image at position (x, y). the other parameters are given by the description of the method draw in Image.
+
+
+
+
+class Timer:
+	def __init__(self, double time = 0, bint start = True):
+		Creates a timer that is set to the specfied tme. If start is True the timer will start directly.
+
+	def resume(self):
+        	Resumes where it last paused.
+
+	def pause(self):
+		Pauses the timer.
+
+	def togglePause(self):
+		Toggles pause.
+
+	def stop(self):
+		Pauses the timer and sets it to 0.
+
+	def setTime(self, double time):
+		Sets the timer to the specified time.
+
+	def getTime(self):
+		Returns the current time of the timer.
+
+	def addTime(self, double time):
+		Adds the specified time to the timer.
+
+	def isRunning(self):
+		Returns True if the timer is not paused, otherwise False.
+
+
+
+
+cdef class Sound:
+	def __init__(self, filename, bint stream)
+		Loads a sound from specified filename, either directly or as a stream. Load larger files as streams (stream=True) and smaller files directly(stream=False)
+
+	def play(self)
+		Plays the sound.
+
+	def pause(self):
+		Pauses the sound.
+
+	def stop(self):
+		Stops the sound.
+
+	def setPosition(self, int pos):
+		Sets the position of the sound.
+
+	def setFrequency(self, float hz):
+		Sets the frequency of the sound.
+
+	def setPan(self, float pan):
+		Sets the pan of the sound (~location).
+
+	def setVolume(self, float volume):
+		Sets the volume of the sound.
+
+	def getPosition(self):
+		Returns the position of the sound.
+
+	def getFrequency(self):
+		Returns the frequency of the sound.
+
+	def isPlaying(self):
+		Returns True if the sound is playing, otherwise False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

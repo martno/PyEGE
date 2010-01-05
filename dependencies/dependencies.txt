@@ -1,0 +1,44 @@
+This software is depending on the following libraries, protocol or languages:
+
+OpenGL
+http://www.opengl.org/
+
+GLFW
+http://glfw.sourceforge.net/
+
+GLee
+http://elf-stone.com/glee.php
+
+DevIL
+http://openil.sourceforge.net/
+
+
+Python
+http://python.org/
+
+Cython
+http://www.cython.org/
+
+NumPy
+http://numpy.scipy.org/
+
+XMPP
+http://xmpp.org/
+
+xmpppy
+http://xmpppy.sourceforge.net/
+
+wxPython
+http://www.wxpython.org/
+
+
+RakNet (3.23)
+http://www.jenkinssoftware.com/raknet/index.html
+
+
+FMOD
+FMOD Sound System', copyright © Firelight Technologies Pty, Ltd., 1994-2009.
+http://www.fmod.org/
+
+For more information see the the directorys with the same names as the libraries or protocols mentioned above. These directorys are located in the same directory as this file.
+

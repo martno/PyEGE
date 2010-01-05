@@ -1,0 +1,91 @@
+This document is a small guide of how to compile and run PyEGE in Windows
+
+Requirments:
+Visual Studio 2008
+Python 2.6
+Cython
+All dependencies, see dependencies/dependencies.txt for locations of where they can be found.
+
+
+How to build:
+1. 
+If you've installed python and cython in the default directories a file named 'cython.py' should be located in the directory C:\Python26\Lib\site-packages\. Place 'ege.pyx' in this folder. 
+
+2. 
+Open cmd and run 
+python cython.py ege.pyx
+A file named 'ege.c' should've been created. Rename this file to 'ege.cpp'.
+
+3. 
+Follow the guide at 
+http://docs.python.org/extending/windows.html#building-on-windows
+to create a new project in Visual Studio 2008 for creation of a .pyd file.
+Be sure to set
+AdditionalOptions="/export:initege"
+and
+OutputFile=".\Release/ege.pyd"
+
+
+4. 
+Move the file 'ege.cpp' that was created in step 2. to the project's folder and include it as a source file.
+
+5.
+Include all source files from RakNet, located in [RakNet folder]\Source, as source files.
+
+6. 
+Include the following files to the project as include files
+ConnectionHandler.h
+Image.h
+Sound.h
+SoundHandler.h
+Timer.h
+WindowHandler.h
+
+and the following files as source files:
+ConnectionHandler.cpp
+Image.cpp
+Sound.cpp
+SoundHandler.cpp
+Timer.cpp
+WindowHandler.cpp
+
+7.
+Add the following libraries to 'Additional Dependencies' in Configuration Properties->Linker->Input which can be found in the projects Property pages:
+odbc32.lib odbccp32.lib python26.lib glfw.lib opengl32.lib glu32.lib DevIL.lib ILU.lib ILUT.lib GLee.lib fmodex_vc.lib ws2_32.lib
+and add the following library to 'Ignore Specific Library' also located in Configuration Properties->Linker->Input:
+LIBC.lib
+(This is why the .pyd file cannot be built with pythons distutils. Please contact me if you find a way to build the .pyd file with distutils.)
+
+8. 
+Move the .pyd file to python's directory.
+
+9. 
+Install numpy, wxPython and xmpppy in the default directories.
+
+10. 
+Add chat.py to python's directory.
+
+
+How to run just the engine:
+1. 
+ege is imported with
+import ege
+
+2. 
+Firstly
+ege.externalInitAll() 
+must be called.
+
+3. 
+After that any ege function and class can be used. Be sure to call ege.update() each frame.
+
+4. 
+Before closing call
+ege.externalCloseAll()
+
+
+How to run the chat:
+1. 
+In cmd write
+python chat.py
+when you are located in python's directory.
