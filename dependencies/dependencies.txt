@@ -32,7 +32,7 @@ wxPython
 http://www.wxpython.org/
 
 
-RakNet (3.23)
+RakNet (v3.23)
 http://www.jenkinssoftware.com/raknet/index.html
 
 

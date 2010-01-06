@@ -19,7 +19,7 @@ from random import randint
 
 VERSION = '0.1.3'
 
-GAME_DESTINATION = r'D:\CE\CE10\threading\game.py'
+GAME_DESTINATION = 'game.py'
 MAX_NO_OF_PLAYERS = 16
 
 
@@ -480,7 +480,7 @@ class ChatAvailableRoomsPanel(wx.Panel, Publisher):
         self.roomNickTextCtrl = wx.TextCtrl(self, -1, DEFAULT_CONFERENCE_NICKNAME, (-1, -1), (-1, -1), wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
         horizontalLine1 = wx.StaticLine(self, -1)
         joinConferenceText = wx.StaticText(self, -1, 'Join conference:')
-        self.joinConferenceTextCtrl = wx.TextCtrl(self, -1, '', (-1, -1), (-1, -1), wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
+        self.joinConferenceTextCtrl = wx.TextCtrl(self, -1, 'pyege@conference.jabber.org', (-1, -1), (-1, -1), wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
         horizontalLine2 = wx.StaticLine(self, -1)
         filterText = wx.StaticText(self, -1, 'Filter: NYI')
 
@@ -828,7 +828,9 @@ class InfoGroupChatPanel(wx.Panel, Subscriber):
         else:
             gh = GameHandler(GAME_DESTINATION)
             if self.serverBehindNAT:
-                gh.startClientThroughNAT(self.hostIP, self.facilitatorAddress)
+                connected = gh.startClientThroughNAT(self.hostIP, self.facilitatorAddress)
+                if not connected:
+                    wx.MessageBox('Could not connect to the server.', 'Connection failed')
             else:
                 connected = gh.startClientDirectConnect(self.hostIP)
                 if not connected:
@@ -1008,8 +1010,6 @@ class OnlinePanel(wx.Frame):
 
         self.mParentOnline = wx.Panel(self, -1)
 
-        #self.xmppHandler.connect('clienttest1@jabber.org', '123456')
-
         self.statusBar = self.CreateStatusBar()
 
         menubar = wx.MenuBar()
@@ -1160,7 +1160,7 @@ class GameHandler(Thread):
     def startClientDirectConnect(self, serverIP):
         self.isServer = False
 
-        ege.externalStartClient(serverIP, False)
+        ege.externalStartClient(serverIP, False)	# ege.externalStartClient(serverIP, False)
         connected = False
         for i in range(100):
             sleep(0.1)
@@ -1170,14 +1170,24 @@ class GameHandler(Thread):
             if packet and packet['type'] == 'connected':
                 connected = True
                 self.start()
+                break
         return connected
     
         
     def startClientThroughNAT(self, serverIP, facilitatorAddress):    # all NAT stuff is pretty much spaghetti code =/... better work that out some day...
         self.isServer = False
         ege.externalStartClient(serverIP, True, facilitatorAddress)
-        self.start()
-        
+        connected = False
+        for i in range(100):
+            sleep(0.1)
+            packet = ege.receiveData()
+            if packet:
+                print packet
+            if packet and packet['type'] == 'connected':
+                connected = True
+                self.start()
+                break
+        return connected
 
 
 
@@ -1199,7 +1209,7 @@ class ChatHandler(Thread):
         self.gameHandler = gameHandler
 
 
-	
+print 'halo'
 ch = ChatHandler()
 ch.start()
 

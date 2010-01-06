@@ -264,7 +264,7 @@ void ConnectionHandler::receiveData(char type[], char data[], int *delay, int *t
 		}
 
 		//RakString *rakString = new RakString();
-		cout << "typeID: " << (unsigned int)typeID << endl;
+		//cout << "typeID: " << (unsigned int)typeID << endl;
 		switch (typeID)
 		{
 		case ID_PYTHON_PICKLED_OBJECT:
@@ -298,6 +298,7 @@ void ConnectionHandler::receiveData(char type[], char data[], int *delay, int *t
 				strcpy(type, "connectedToFacilitator");
 			}
 			else {
+				printf("Connected to host!\n");
 				strcpy(type, "connected");
 				isConnected = true;
 			}
@@ -347,7 +348,7 @@ void ConnectionHandler::receiveData(char type[], char data[], int *delay, int *t
 	}
 
 	peer->DeallocatePacket(packet);
-	delete packet;
+	//delete packet;
 }
 
 
