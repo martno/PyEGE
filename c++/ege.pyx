@@ -537,7 +537,7 @@ def getKey(key):
 
 cdef extern from "Image.h":
     ctypedef struct c_Image "Image":
-        void draw(double x, double y, bint bilinear, double scaleX, double scaleY, double rotate, double rotatePtX, double rotatePtY, unsigned char *color)
+        void draw(double x, double y, double x_0, double y_0, double width, double height, bint bilinear, double scaleX, double scaleY, double rotate, double rotatePtX, double rotatePtY, unsigned char *color)
         int getWidth()
         int getHeight()
         void clear(color)
@@ -550,7 +550,7 @@ cdef extern from "Image.h":
                                 double rotate, double rotatePtX, double rotatePtY, unsigned char *color)
     c_Image *new_ImageI "new Image" (int width, int height, unsigned char *arrayColor)
     c_Image *new_ImageII "new Image" (char *file)
-    c_Image *new_ImageIII "new Image" (char *FileName, int x, int y, int width, int height)
+    c_Image *new_ImageIII "new Image" (char* text, int size)
     void del_Image "delete" (c_Image *img)
 
 
@@ -565,8 +565,8 @@ cdef class Image:	# test if an image can be generated from wh instead
         cdef unsigned char *arrayColor
 
         if isinstance(I, str):
-            if II:        #(char *FileName, int x, int y, int width, int height)
-                self.thisPtr = new_ImageIII( I, II, III, IV, V )
+            if isinstance(II, int):        #(char *text, int size)
+                self.thisPtr = new_ImageIII( I, II )
                 return
             else:        #(char *file)
                 self.thisPtr = new_ImageII( I )
@@ -595,7 +595,7 @@ cdef class Image:	# test if an image can be generated from wh instead
     def __dealloc__(self):
         del_Image(self.thisPtr)
 
-    def draw(self, double x, double y, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
+    def draw(self, double x, double y, double x_0=0, double y_0=0, double width=-1, double height=-1, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
         cdef int colorLength
         cdef unsigned char *arrayColor
         if(color):
@@ -612,7 +612,7 @@ cdef class Image:	# test if an image can be generated from wh instead
             #    kasta exception
         else:
             arrayColor = NULL
-        self.thisPtr.draw(x, y, bilinear, scaleX, scaleY, rotate, rotatePtX, rotatePtY, arrayColor)
+        self.thisPtr.draw(x, y, x_0, y_0, width, height, bilinear, scaleX, scaleY, rotate, rotatePtX, rotatePtY, arrayColor)
 
     def getWidth(self):
         return self.thisPtr.getWidth()

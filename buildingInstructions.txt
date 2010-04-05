@@ -60,7 +60,7 @@ LIBC.lib
 Move the .pyd file to python's directory.
 
 9. 
-Install numpy, wxPython and xmpppy in the default directories.
+Install Box2D, numpy, wxPython and xmpppy in the default directories.
 
 10. 
 Add chat.py to python's directory.

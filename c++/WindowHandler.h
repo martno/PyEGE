@@ -1,9 +1,13 @@
+#ifndef WINDOW_HANDLER_H
+#define WINDOW_HANDLER_H
+
 #include <GL/GLee.h>	// Must be included before GLFW
 #include <GL/glfw.h>	// For GLFW, OpenGL and GLU
 
 #include <IL/il.h>		// DevIL
 #include <IL/ilu.h>		// DevIL
 #include <IL/ilut.h>	// DevIL
+
 
 class WindowHandler {
 public:
@@ -48,3 +52,4 @@ private:
 	GLuint fbo;
 };
 
+#endif WINDOW_HANDLER_H

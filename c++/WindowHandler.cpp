@@ -1,5 +1,6 @@
 #include "WindowHandler.h"
 #include "Image.h"
+#include "Font.h"
 
 #include <stdlib.h>    // For malloc() etc.
 #include <stdio.h>     // For printf(), fopen() etc.
@@ -16,9 +17,11 @@
 #include <IL/ilu.h>		// DevIL
 #include <IL/ilut.h>	// DevIL
 
+using namespace std;
+
 #define PI 3.14159265
 
-using namespace std;
+
 
 // All methods that starts with 'c' are methods called by python
 
@@ -41,8 +44,8 @@ WindowHandler::WindowHandler() {
 	// Initialize ILUT with OpenGL support.
 	//ilutRenderer(ILUT_OPENGL);
 
-    int    ok;             // Flag telling if the window was opened
-    int    running;        // Flag telling if the program is running
+    //int    ok;             // Flag telling if the window was opened
+    //int    running;        // Flag telling if the program is running
 
     // Initialize GLFW
     glfwInit();
@@ -50,7 +53,11 @@ WindowHandler::WindowHandler() {
 
 	//glfwOpenWindowHint(GLFW_WINDOW_NO_RESIZE, GL_TRUE);	// Doesn't seem to work =/
 	
+
 	Image::setWindowHandlerPointer(this);
+
+	Font* defaultFont = new Font("C:\\Windows\\Fonts\\times.ttf", 10);
+	Image::setDefaultFont( defaultFont );
 }
 
 
@@ -201,6 +208,9 @@ void WindowHandler::cShowMouseCursor(bool show) {
 }
 
 void WindowHandler::cUpdate() {
+	//sf::RenderWindow App(sf::VideoMode(800, 600, 32), "SFML Graphics");
+	//sf::Shape Line = sf::Shape::Line(10, 10, 100, 100, 3, sf::Color(255, 255, 255));
+
 	glfwSwapBuffers();
 
 	int    width, height;  // Window dimensions
@@ -210,6 +220,7 @@ void WindowHandler::cUpdate() {
 	while( (glfwGetTime() - prevTime) < (1/fps) ) {
 		// do nothing
 	}
+	prevTime = glfwGetTime();
 
     // Get window size
     glfwGetWindowSize( &width, &height );

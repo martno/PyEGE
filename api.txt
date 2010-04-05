@@ -197,6 +197,8 @@ class Image:
 	def __init__(self, width, height, color)
 		Initialize the image with specified width, height and color.
 
+	def __init__(self, text, size)
+		Initialize the image with the given text and size on the font. Times new roman is loaded as the font by default.
 
 
 	def draw(self, double x, double y, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
