@@ -1,3 +1,7 @@
+#ifndef SOUND_HANDLER_H
+#define SOUND_HANDLER_H
+
+
 #include "fmod/fmod.hpp"
 #include "fmod/fmod_errors.h"
 
@@ -22,3 +26,6 @@ private:
 	char             name[256];
 
 };
+
+#endif SOUND_HANDLER_H
+

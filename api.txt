@@ -1,7 +1,7 @@
 
 
 newWindow(int width, int height, bint fullscreen = False)
-	Creates a new window with given width and height. If fullscreen is set to True the game will start in fullscreen, otherwise the game is windowed. Don't open several windows at the same time.
+	Creates a new window with given width and height. If fullscreen is set to True the game will start in fullscreen, otherwise the game runs in a  window. Don't open several windows at the same time. 
 
 closeWindow()
 	Closes the current window.
@@ -20,7 +20,7 @@ setFPS(int newFPS):
 
 
 def setClearColor(color):
-	Sets the clear color to given color.
+	Sets the clear color to the given color.
 
 
 showMouseCursor(bint show)
@@ -116,7 +116,8 @@ KEY_LAST         =KEY_KP_ENTER
 
 sendData(data, int priority=HIGH_PRIORITY, int reliability=RELIABLE_ORDERED, int channel=0, bint timeStamp=True, svUsers=None, bint svBroadcast=True)
     Sends data with specified priority, reliability and channel. 
-data is serialized using cPickle so you can send almost everything through this function! see 
+Data is serialized using cPickle so you can send almost everything using this function! 
+See 
 http://docs.python.org/library/pickle.html#what-can-be-pickled-and-unpickled
 for more information on what can be pickled.
 Priority can be one of the following
@@ -137,21 +138,21 @@ channel is an integer in the range [0, 31]. If timeStamp is True the packet will
 
 
 receiveData()
-If there is a packet this function returns a dictionary with the following keys: 
+If there is a packet waiting to be retrieved this function returns it in a dictionary with the following keys: 
 from
 	A string representing the sender, if this value is 'system' it is a message from the system and not a packet including data
-type:
+type
 	The type of the packet. A packet sent from a user has the type 'userDefinedPacket'
 data
 	If type is 'userDefinedPacket' then this is the data sent by the user.
 delay
-	If the message was timestamped then this is approximately the delay from the time when the packet was sent until it was red by this function in ms, otherwise this value is None
-If there is no packet this function returns None
-        
+	If the message was timestamped then this is approximately the delay from the time when the packet was sent until it was read by this function, in ms. Otherwise this value is None.
+If there is no packet left this function returns None.
+       
 
 
 isServer()
-	Returns True if this instance is acting as a server, otherwise False
+	Returns True if this instance is acting as a server, otherwise False.
 
 
 
@@ -160,13 +161,13 @@ isServer()
 
 
 drawPoints(coords, color, float size = 1.0, bint antiAliasing = False):
-	Draws several points at positions given by coords with specified color and size. color is either (R, G, B) or (R, G, B, A). ce is preloaded with the following colors: WHITE, RED, GREEN, BLUE, YELLOW, PINK, CYAN, BLACK.
+	Draws several points at positions given by coords with specified color and size. color is either (R, G, B) or (R, G, B, A). PyEGE is preloaded with the following colors: WHITE, RED, GREEN, BLUE, YELLOW, PINK, CYAN, BLACK.
 The points are anti aliased if antiAliasing is True.
 	coords should look like the following:
 	( (x1, y1), (x2, y2), (x3, y3), ... )
 
 drawLines(coords, color, float width = 1, bint loop = False, stipple = False, bint antiAliasing = False):
-	Draws a line between the coordinated given by coords with specified color and width . coords should look like the example in the description of drawPoints. If loop True a line from the last point to the first point is also drawn. To stipple the line set stipple to (stippleFactor, stipplePattern), otherwise set this to False. The points are anti aliased if antiAliasing is True.
+	Draws a line between the coordinated given by coords with specified color and width . coords should look like the example in the description of drawPoints. If loop is True a line from the last point to the first point is also drawn. To stipple the line set stipple to (stippleFactor, stipplePattern), otherwise set this to False. The points are anti-aliased if antiAliasing is True.
 
 
 def drawTriangles(coords, color, int form = SEPARATE)
@@ -179,7 +180,7 @@ def drawEllipse(coords, color, double a, double b, double rotate)
 
 
 def drawPolygon(coords, color, int type = 0)
-	Draws a polygon with specified coorinates (given by coords) and color. coords should look like the example in the description of drawPoints. IMPORTANT: The polygon MUST be convex!
+	Draws a polygon with given coorinates (coords) and color. coords should look like the example in the description of drawPoints. IMPORTANT: The polygon MUST be convex!
 
 
 
@@ -192,17 +193,17 @@ def drawPolygon(coords, color, int type = 0)
 
 class Image:
 	def __init__(filename)
-		Initialize the image with specified image in filename.
+		Initialize the image with given image in filename.
 
 	def __init__(self, width, height, color)
-		Initialize the image with specified width, height and color.
+		Initialize the image with given width, height and color.
 
 	def __init__(self, text, size)
-		Initialize the image with the given text and size on the font. Times new roman is loaded as the font by default.
+		Initialize the image with the given text and size on the font. Franklin Gothic Medium is loaded as the font by default.
 
 
-	def draw(self, double x, double y, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
-		Draws the image on the screen at position (x, y). Bilinear can be set. scaleX and scaleY scales the image in the x repsectively y direction. The image is rotated rotation degrees around (rotatePtX, rotatePtY). If the color is of the form (R, G, B) or (R, G , B, A) the image will be tinted to this color. Set this to WHITE or False to get the real colors of the image.
+	def draw(self, double x, double y, double x_0=0, double y_0=0, double width=-1, double height=-1, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
+		Draws the image on the screen at position (x, y). If width and height != -1 a part of the total image is only drawn with the bottom left corner of the image is given by (x_0, y_0) and with given width and height. Bilinear can be set. scaleX and scaleY scales the image in the x repsectively y direction. The image is rotated rotation degrees around (rotatePtX, rotatePtY). If the color is of the form (R, G, B) or (R, G , B, A) the image will be tinted to this color. Set this to WHITE or False to get the original colors of the image.
 
 
 	def getWidth(self)
@@ -227,7 +228,7 @@ class Image:
 		Draws a polygon in the image, see description for the function drawPolygon for more info.
 
 
-	def subImage(self, Image src, int x, int y, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
+	def subImage(self, Image src, int x, int y, double x_0 = 0.0, double y_0 = 0.0, double width = -1.0, double height = -1.0, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
 		Draws a already loaded image in the current image at position (x, y). the other parameters are given by the description of the method draw in Image.
 
 
@@ -235,7 +236,7 @@ class Image:
 
 class Timer:
 	def __init__(self, double time = 0, bint start = True):
-		Creates a timer that is set to the specfied tme. If start is True the timer will start directly.
+		Creates a timer that is set to the given time. If start is True the timer will start directly.
 
 	def resume(self):
         	Resumes where it last paused.
@@ -256,7 +257,7 @@ class Timer:
 		Returns the current time of the timer.
 
 	def addTime(self, double time):
-		Adds the specified time to the timer.
+		Adds the given time to the timer.
 
 	def isRunning(self):
 		Returns True if the timer is not paused, otherwise False.
@@ -296,7 +297,7 @@ cdef class Sound:
 		Returns the frequency of the sound.
 
 	def isPlaying(self):
-		Returns True if the sound is playing, otherwise False
+		Returns True if the sound is playing, otherwise False.
 
 
 

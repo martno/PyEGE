@@ -17,6 +17,8 @@
 #include <IL/ilu.h>		// DevIL
 #include <IL/ilut.h>	// DevIL
 
+#include "MapSearchNode.h"
+
 using namespace std;
 
 #define PI 3.14159265
@@ -26,6 +28,10 @@ using namespace std;
 // All methods that starts with 'c' are methods called by python
 
 WindowHandler::WindowHandler() {
+	
+	mapLoaded = false;
+	MapSearchNode::setWindowHandler( this );
+
 	windowOpened = false;
 
 	prevTime = 0;
@@ -56,7 +62,7 @@ WindowHandler::WindowHandler() {
 
 	Image::setWindowHandlerPointer(this);
 
-	Font* defaultFont = new Font("C:\\Windows\\Fonts\\times.ttf", 10);
+	Font* defaultFont = new Font("C:\\Windows\\Fonts\\timesbd.ttf", 10);
 	Image::setDefaultFont( defaultFont );
 }
 
@@ -104,9 +110,6 @@ void WindowHandler::cNewWindow(int width, int height, bool fullscreen) {
 		// Enable sticky keys
 		glfwEnable( GLFW_STICKY_KEYS );
 		glfwEnable( GLFW_KEY_REPEAT );
-
-		int width;
-		int height;
 
 		// Get current time
 		double currentTime = glfwGetTime();
@@ -386,24 +389,203 @@ void WindowHandler::cSetClearColor(unsigned char *color) {
 
 /* FBO */
 void WindowHandler::bindFBO(GLuint texName, GLuint width, GLuint height) {
+
+
+
+	//glBindTexture(GL_TEXTURE_2D, texName);
+/*
+	glPushMatrix();
+		gluOrtho2D(0.0, (GLfloat)width, 0.0, (GLfloat)height);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+*/
+
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+	//glPushAttrib(GL_COLOR_BUFFER_BIT);
+	//glPushAttrib(GL_VIEWPORT_BIT);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, texName, 0);
 
-	glPushAttrib(GL_COLOR_BUFFER_BIT);
-	//glPushAttrib(GL_VIEWPORT_BIT | GL_COLOR_BUFFER_BIT);
+	glPushAttrib(GL_VIEWPORT_BIT | GL_COLOR_BUFFER_BIT);
 	//glViewport(0, 0, width, height);
+	
+	glLoadIdentity();
 
 	if( !(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ) {
-		cout << "FBO error!" << endl;
+		cout << "FBO error! Error no: " << glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) << endl;
 	}
 }
 
 void WindowHandler::releaseFBO() {
 	glPopAttrib();
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	//glPopMatrix();
 }
 
 
+
+
+
+void WindowHandler::cLoadMap(int* cMap, int width, int height)
+{
+	if( mapLoaded ) {
+		free( map );
+	}
+
+	mapLoaded = true;
+
+	mapWidth = width;
+	mapHeight = height;
+
+	map = (int*)malloc(width * height * sizeof(int));
+	for(int i=0; i<height; i++) {
+		for(int j=0; j<width; j++) {
+			map[i*width + j] = cMap[i*width + j];
+		}
+	}
+
+}
+
+
+int WindowHandler::cComputePath(int startNodeX, int startNodeY, int endNodeX, int endNodeY)
+{
+	path.clear();
+
+	AStarSearch<MapSearchNode> astarsearch;
+
+	// Create a start state
+	MapSearchNode nodeStart;
+	nodeStart.x = startNodeX;
+	nodeStart.y = startNodeY; 
+
+	// Define the goal state
+	MapSearchNode nodeEnd;
+	nodeEnd.x = endNodeX;
+	nodeEnd.y = endNodeY; 
+	
+	// Set Start and goal states
+	astarsearch.SetStartAndGoalStates( nodeStart, nodeEnd );
+
+	unsigned int SearchState;
+	unsigned int SearchSteps = 0;
+
+	do
+	{
+		SearchState = astarsearch.SearchStep();
+
+		SearchSteps++;
+
+		#if DEBUG_LISTS
+
+				cout << "Steps:" << SearchSteps << "\n";
+
+				int len = 0;
+
+				cout << "Open:\n";
+				MapSearchNode *p = astarsearch.GetOpenListStart();
+				while( p )
+				{
+					len++;
+		#if !DEBUG_LIST_LENGTHS_ONLY			
+					((MapSearchNode *)p)->PrintNodeInfo();
+		#endif
+					p = astarsearch.GetOpenListNext();
+					
+				}
+
+				cout << "Open list has " << len << " nodes\n";
+
+				len = 0;
+
+				cout << "Closed:\n";
+				p = astarsearch.GetClosedListStart();
+				while( p )
+				{
+					len++;
+		#if !DEBUG_LIST_LENGTHS_ONLY			
+					p->PrintNodeInfo();
+		#endif			
+					p = astarsearch.GetClosedListNext();
+				}
+
+				cout << "Closed list has " << len << " nodes\n";
+		#endif
+
+	}
+	while( SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SEARCHING );
+
+	if( SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SUCCEEDED )
+	{
+		//cout << "Search found goal state\n";
+
+			MapSearchNode *node = astarsearch.GetSolutionStart();
+
+#if DISPLAY_SOLUTION
+			cout << "Displaying solution\n";
+#endif
+			int steps = 0;
+
+			path.push_back(node->x);
+			path.push_back(node->y);
+
+			for( ;; )
+			{
+				node = astarsearch.GetSolutionNext();
+
+				if( !node )
+				{
+					break;
+				}
+				
+				path.push_back(node->x);
+				path.push_back(node->y);
+
+				steps ++;
+			
+			};
+
+			//cout << "Solution steps " << steps << endl;
+
+			// Once you're done with the solution you can free the nodes up
+			astarsearch.FreeSolutionNodes();
+
+			return steps;
+
+	}
+	else if( SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_FAILED ) 
+	{
+		//cout << "Search terminated. Did not find goal state\n";
+		return 0;
+	}
+
+
+	//astarsearch.EnsureMemoryFreed();
+
+}
+
+void WindowHandler::cGetPath(int* pathData)
+{
+	int i = 0;
+	for (list<int>::iterator it = path.begin(); it != path.end(); it++) {
+		pathData[i] = *it;
+		i++;
+	}		
+
+}
+
+int WindowHandler::getMapWidth()
+{
+	return mapWidth;
+}
+
+int WindowHandler::getMapHeight()
+{
+	return mapHeight;
+}
+
+int WindowHandler::getMap(int x, int y)
+{
+	return map[(y*mapWidth)+x];
+}
 
 /*
 void WindowHandler::cSetWindowTitle(char *title) {

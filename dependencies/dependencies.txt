@@ -40,5 +40,9 @@ FMOD
 FMOD Sound System', copyright © Firelight Technologies Pty, Ltd., 1994-2009.
 http://www.fmod.org/
 
-For more information see the the directorys with the same names as the libraries or protocols mentioned above. These directorys are located in the same directory as this file.
 
+a-star-algorithm-implementation
+http://code.google.com/p/a-star-algorithm-implementation/
+
+
+For more information see the the directorys with the same names as the libraries or protocols mentioned above. These directorys are located in the same directory as this file.

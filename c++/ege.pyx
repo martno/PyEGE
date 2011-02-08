@@ -160,12 +160,21 @@ cdef extern from "WindowHandler.h":
         void cDrawPolygon(double *coords, int dimension, unsigned char *color)
         void cDrawEllipse(double x, double y, double a, double b, double alpha , unsigned char *color)
         void cSetClearColor(unsigned char *color)
+        
+        void cLoadMap(int* cMap, int width, int height)
+        int cComputePath(int startNodeX, int startNodeY, int endNodeX, int endNodeY)
+        void cGetPath(int *pathData)
+        
         #c_Image *newImage(char *filename)
 
         #void bindFBO(GLuint texName, GLuint width, GLuint height);
         #void releaseFBO();
     c_WindowHandler *new_WindowHandler "new WindowHandler" ()
     void del_WindowHandler "delete" (c_WindowHandler *wh)
+
+
+
+
 
 
 
@@ -292,6 +301,10 @@ def isServer():
 
 
 
+
+
+
+
 cdef extern from "SoundHandler.h":
     ctypedef struct c_SoundHandler "SoundHandler":
         void update()
@@ -339,6 +352,9 @@ def update():
 
 
 
+
+
+
 def newWindow(int width, int height, bint fullscreen = False):
     wh.cNewWindow(width, height, fullscreen)
 
@@ -356,6 +372,34 @@ def setFPS(int newFPS):
 
 def showMouseCursor(bint show): # doesn't seem to work..
     wh.cShowMouseCursor(show)
+
+
+
+
+
+
+def loadMap( map ):
+    cdef int height = len( map )
+    cdef int width = len( map[0] )
+    
+    cdef numpy.ndarray newMap = numpy.array(map, dtype=numpy.int32)
+    
+    cdef int* cMap = <int*>newMap.data
+    
+    wh.cLoadMap(cMap, width, height)
+
+
+def getPath(startNode, endNode):
+    pathLength = wh.cComputePath(startNode[0], startNode[1], endNode[0], endNode[1]) + 1	# seriously, why do i need to add 1??
+
+    cdef numpy.ndarray[numpy.int32_t, ndim=2] path = numpy.zeros((pathLength, 2), dtype=numpy.int32)
+    wh.cGetPath( <int*>path.data )
+
+    return numpy.array(path)
+
+
+
+
 
 
 
@@ -546,8 +590,8 @@ cdef extern from "Image.h":
                                 bint stipple, int stippleFactor, int stipplePattern, bint antiAliasing)
         void drawTriangles(double *coords, int dimension, unsigned char *color, int form)
         void drawPolygon(double *coords, int dimension, unsigned char *color)
-        void drawSubImg(c_Image *subImg, double x, double y, bint bilinear, double scaleX, double scaleY, \
-                                double rotate, double rotatePtX, double rotatePtY, unsigned char *color)
+        void drawSubImg(c_Image *subImg, double x, double y, double x_0, double y_0, double width, double height, \
+                bint bilinear, double scaleX, double scaleY, double rotate, double rotatePtX, double rotatePtY, unsigned char *color)
     c_Image *new_ImageI "new Image" (int width, int height, unsigned char *arrayColor)
     c_Image *new_ImageII "new Image" (char *file)
     c_Image *new_ImageIII "new Image" (char* text, int size)
@@ -710,7 +754,7 @@ cdef class Image:	# test if an image can be generated from wh instead
         self.thisPtr.drawPolygon(cCoords, dim, arrayColor)
         free(arrayColor)
 
-    def subImage(self, Image src, int x, int y, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
+    def subImage(self, Image src, int x, int y, double x_0 = 0.0, double y_0 = 0.0, double width = -1.0, double height = -1.0, bint bilinear = False, double scaleX = 1.0, double scaleY = 1.0, double rotate = 0.0, double rotatePtX = 0.0, double rotatePtY = 0.0, color = False):
         cdef int colorLength
         cdef unsigned char *arrayColor
         if(color):
@@ -727,7 +771,7 @@ cdef class Image:	# test if an image can be generated from wh instead
             #    kasta exception
         else:
             arrayColor = NULL
-        self.thisPtr.drawSubImg(src.thisPtr, x, y, bilinear, scaleX, scaleY, rotate, rotatePtX, rotatePtY, arrayColor)
+        self.thisPtr.drawSubImg(src.thisPtr, x, y, x_0, y_0, width, height, bilinear, scaleX, scaleY, rotate, rotatePtX, rotatePtY, arrayColor)
 
 
 
@@ -877,15 +921,6 @@ cdef class Sound:
 
     def isPlaying(self):
         return self.thisPtr.isPlaying()
-
-
-
-
-
-
-
-
-
 
 
 

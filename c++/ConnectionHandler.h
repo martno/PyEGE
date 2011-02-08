@@ -1,3 +1,6 @@
+#ifndef CONNECTION_HANDLER_H
+#define CONNECTION_HANDLER_H
+
 #include "MessageIdentifiers.h"
 #include "RakNetworkFactory.h"
 #include "RakPeerInterface.h"
@@ -56,3 +59,6 @@ private:
 	bool serverBehindNAT;
 	RakNetGUID remoteGUID;*/
 };
+
+
+#endif CONNECTION_HANDLER_H

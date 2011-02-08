@@ -17,7 +17,7 @@ from time import sleep
 
 from random import randint
 
-VERSION = '0.1.3'
+VERSION = '0.1.5'
 
 GAME_DESTINATION = 'game.py'
 MAX_NO_OF_PLAYERS = 16
@@ -368,7 +368,7 @@ class LoginPanel(wx.Panel):
             self.onlineStatusText.SetLabel('Online')
             loginText = \
 "You have successfully logged in! You can join rooms (a.k.a. conferences) to the right. This is where you connect to other players to play online. \
-You can't send games through this client today but this feature will hopefully be available very soon. Therefore you will have to send the games through another media.\
+You can't send games through this client today but this feature will hopefully be available very soon. Therefore you will have to send the games through another service.\
 \nFor today the games are not secure so be sure that you trust the source of the games! \
 However, as soon as there exist a working version of PyPy's sandbox for Windows this will be implemented in PyEGE and the games should from then on be secure. \
 Please contact me if you know how to fix PyPy's sandbox for Windows.\
@@ -379,7 +379,7 @@ Please contact me if you know how to fix PyPy's sandbox for Windows.\
 
     def OnRegister(self, event):
         registerText = \
-'Wait! You might already have an account. You can login with almost any XMPP account, which means that you can, for example, login with a gmail account. \
+'Wait! You might already have an account. You can login with almost any XMPP account. \
 However, if you don\'t already have an XMPP account you can register one at http://www.jabber.org/create-an-account/'
         wx.MessageBox(registerText, 'Register account')
         
@@ -529,7 +529,10 @@ class ChatAvailableRoomsPanel(wx.Panel, Publisher):
         self.availableConferences = xmpp.features.discoverItems(client, server)
         for conferenceInfo in self.availableConferences:
             try:
-                name = conferenceInfo['name']
+                if 'name' in conferenceInfo:
+                    name = conferenceInfo['name']
+                else:
+                    name = 'N/A'
                 jid = conferenceInfo['jid']
                 self.availableConferencesList.Append( [name, jid] )
             except(UnicodeEncodeError):
@@ -1071,17 +1074,17 @@ class OnlinePanel(wx.Frame):
     def OnPyEGEHelp(self, event):
         helpText = \
 "As this is a beta version not all features works and, of the existing features, not all of them works as they should. If something doesn't work, \
-which have previously worked, the easiest way to get it working again is just to restart the client. Features that do not work for today are \
+which have previously worked, the easiest way to get it working again is often just to restart the client. Features that do not work for today are \
 labled 'NYI' (Not Yet Implemented). \
-\nTo add contacts to your list you will have to download another client, add the contact there and then log back in to PyEGE. \
-Your added contacts should now be visible under contact list below the login panel. However only contacts that are online are visible in this list. \
-\nFor a direct connect to work ('Behind NAT' is unchecked) the host should not be behind a NAT (a.k.a. router, hub). \
+\nTo add contacts to your list you will have to download another XMPP client, add the contact there and then log back in to PyEGE. \
+Your added contacts should now be visible under contact list below the login panel. However, only contacts that are online are visible in this list. \
+\nFor a direct connect to work ('Behind NAT' is unchecked) the host should not be behind a NAT (a.k.a. router or hub). \
 If you can't find a host that is not behind a NAT you might \
-you might still be able to connect by using a NPT (NAT Punchthrough). However, for this to work you'll need a facilitator server that is not be behind a NAT. \
+you might still be able to connect by using a so called NPT (NAT Punch-Through). However, for this to work you'll need a facilitator server that is not be behind a NAT. \
 To connect through NPT a user, not behind a NAT, starts startFacilitator.bat. The facilitators IP will be displayed on the screen so that he or she can \
 send this to the host. This will have to be done manually. The host clicks on the checkbox 'Behind NAT' so that it is activated and enters the facilitators IP. \
 After that the host clicks on 'Start game as host'. After about five seconds the other users in the room will have this button changed to 'Start game as client.' \
-When the clients click on this button they will hopefully be able to connect to the host through the facilitator. The facilitator can shut down the server \
+When the clients click on this button they will hopefully be able to connect to the host through the facilitator. The facilitator can now shut down the server \
 when the clients have connected to the host. \
 \nFor more help see the 'FAQ' on the homepage."
         wx.MessageBox(helpText, 'PyEGE Help')
@@ -1125,6 +1128,9 @@ http://www.jenkinssoftware.com/raknet/index.html
 FMOD
 FMOD Sound System', copyright © Firelight Technologies Pty, Ltd., 1994-2009.
 http://www.fmod.org/
+
+a-star-algorithm-implementation
+http://code.google.com/p/a-star-algorithm-implementation/
 
 See the directory 'dependencies' for more information'''\
         + '\n\nSpecial Thanks to:\nAnders Bennehag'
@@ -1209,7 +1215,6 @@ class ChatHandler(Thread):
         self.gameHandler = gameHandler
 
 
-print 'halo'
 ch = ChatHandler()
 ch.start()
 

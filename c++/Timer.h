@@ -1,3 +1,6 @@
+#ifndef TIMER_H
+#define TIMER_H
+
 #include <GL/GLee.h>	// Must be included before GLFW
 #include <GL/glfw.h>	// For GLFW, OpenGL and GLU
 
@@ -20,3 +23,6 @@ private:
 	double startTime;
 	double pausedAt;
 };
+
+
+#endif TIMER_H

@@ -8,6 +8,7 @@
 #include <IL/ilu.h>		// DevIL
 #include <IL/ilut.h>	// DevIL
 
+#include <list>
 
 class WindowHandler {
 public:
@@ -36,6 +37,13 @@ public:
 	void bindFBO(GLuint texName, GLuint width, GLuint height);
 	void releaseFBO();
 
+	void cLoadMap(int* cMap, int width, int height);
+	int cComputePath(int startNodeX, int startNodeY, int endNodeX, int endNodeY);
+	void cGetPath(int* pathData);
+	int getMapWidth();
+	int getMapHeight();
+	int getMap(int x, int y);
+
 private:
 	enum TriangleForms { SEPARATE, STRIP, FAN };
 
@@ -50,6 +58,12 @@ private:
 	ILubyte *imageData;
 
 	GLuint fbo;
+
+	int* map;
+	int mapWidth;
+	int mapHeight;
+	bool mapLoaded;
+	std::list<int> path;
 };
 
 #endif WINDOW_HANDLER_H

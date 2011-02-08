@@ -1,3 +1,6 @@
+#ifndef SOUND_H
+#define SOUND_H
+
 #include "fmod/fmod.hpp"
 #include "fmod/fmod_errors.h"
 
@@ -26,3 +29,6 @@ private:
 
 	static FMOD::System *fmodSystem;
 };
+
+#endif SOUND_H
+
